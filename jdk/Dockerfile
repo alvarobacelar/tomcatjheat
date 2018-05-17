@@ -1,4 +1,4 @@
-FROM java:8
+FROM alvarobacelar/java-oracle
 
 ENV CATALINA_HOME /usr/local/tomcat
 ENV PATH $CATALINA_HOME/bin:$PATH
@@ -92,28 +92,28 @@ RUN set -eux; \
 	\
 	success=; \
 	for url in $TOMCAT_TGZ_URLS; do \
-		if wget -O tomcat.tar.gz "$url"; then \
+		if wget -O apache-tomcat-8.0.35.tar.gz "$url"; then \
 			success=1; \
 			break; \
 		fi; \
 	done; \
 	[ -n "$success" ]; \
 	\
-	# echo "$TOMCAT_SHA512 *tomcat.tar.gz" | sha512sum -c -; \
+	echo "$TOMCAT_SHA512 *apache-tomcat-8.0.35.tar.gz" | sha1sum -c -; \
 	\
 	success=; \
 	for url in $TOMCAT_ASC_URLS; do \
-		if wget -O tomcat.tar.gz.asc "$url"; then \
+		if wget -O apache-tomcat-8.0.35.tar.gz.asc "$url"; then \
 			success=1; \
 			break; \
 		fi; \
 	done; \
 	[ -n "$success" ]; \
 	\
-	gpg --batch --verify tomcat.tar.gz.asc tomcat.tar.gz; \
-	tar -xvf tomcat.tar.gz --strip-components=1; \
+	gpg --batch --verify apache-tomcat-8.0.35.tar.gz.asc apache-tomcat-8.0.35.tar.gz; \
+	tar -xvf apache-tomcat-8.0.35.tar.gz --strip-components=1; \
 	rm bin/*.bat; \
-	rm tomcat.tar.gz*; \
+	rm apache-tomcat-8.0.35.tar.gz*; \
 	rm -rf "$GNUPGHOME"; \
 	\
 	nativeBuildDir="$(mktemp -d)"; \
@@ -124,7 +124,7 @@ RUN set -eux; \
 		libapr1-dev \
 		libssl-dev \
 		make \
-		"openjdk-${JAVA_VERSION%%[.~bu-]*}-jdk=$JAVA_DEBIAN_VERSION" \
+	#	"openjdk-${JAVA_VERSION%%[.~bu-]*}-jdk=$JAVA_DEBIAN_VERSION" \
 	; \
 	( \
 		export CATALINA_HOME="$PWD"; \
